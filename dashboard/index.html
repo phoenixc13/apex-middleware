@@ -1,0 +1,351 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>APEX Middleware Dashboard</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #0a0a0a 0%, #1a1a1a 50%, #0a0a0a 100%);
+            color: #e0e0e0;
+            overflow-x: hidden;
+        }
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+        header {
+            text-align: center;
+            padding: 40px 20px;
+            background: linear-gradient(90deg, #000000 0%, #1a1a1a 50%, #000000 100%);
+            border-bottom: 2px solid #d4af37;
+            box-shadow: 0 4px 20px rgba(212, 175, 55, 0.3);
+        }
+        h1 {
+            font-size: 3rem;
+            font-weight: 900;
+            background: linear-gradient(135deg, #d4af37 0%, #f4e3b2 50%, #c4a747 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 30px rgba(212, 175, 55, 0.5);
+            letter-spacing: 2px;
+        }
+        .tagline {
+            color: #c0c0c0;
+            font-size: 0.95rem;
+            margin-top: 10px;
+            letter-spacing: 3px;
+            text-transform: uppercase;
+        }
+        .grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 25px;
+            margin-top: 40px;
+        }
+        .card {
+            background: linear-gradient(145deg, #1a1a1a 0%, #0f0f0f 100%);
+            border: 1px solid #333;
+            border-radius: 12px;
+            padding: 25px;
+            box-shadow: 0 8px 32px rgba(0,0,0,0.8), inset 0 1px 0 rgba(255,255,255,0.05);
+            transition: all 0.3s ease;
+        }
+        .card:hover {
+            border-color: #d4af37;
+            box-shadow: 0 12px 40px rgba(212, 175, 55, 0.3), inset 0 1px 0 rgba(212, 175, 55, 0.1);
+            transform: translateY(-5px);
+        }
+        .card h2 {
+            font-size: 1.4rem;
+            color: #d4af37;
+            margin-bottom: 20px;
+            border-bottom: 1px solid #333;
+            padding-bottom: 10px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .stat {
+            display: flex;
+            justify-content: space-between;
+            padding: 12px 0;
+            border-bottom: 1px solid #222;
+        }
+        .stat:last-child {
+            border-bottom: none;
+        }
+        .stat-label {
+            color: #999;
+            font-size: 0.9rem;
+        }
+        .stat-value {
+            color: #e0e0e0;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+        .stat-value.gold {
+            color: #d4af37;
+        }
+        .stat-value.green {
+            color: #4ade80;
+        }
+        .stat-value.red {
+            color: #f87171;
+        }
+        .status-indicator {
+            display: inline-block;
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            margin-right: 8px;
+        }
+        .status-online {
+            background: #4ade80;
+            box-shadow: 0 0 10px #4ade80;
+        }
+        .status-offline {
+            background: #f87171;
+            box-shadow: 0 0 10px #f87171;
+        }
+        #topics-list {
+            max-height: 400px;
+            overflow-y: auto;
+        }
+        #providers-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+        .provider-card {
+            background: #0f0f0f;
+            padding: 15px;
+            border-radius: 8px;
+            border: 1px solid #222;
+        }
+        .provider-card h3 {
+            color: #d4af37;
+            font-size: 1rem;
+            margin-bottom: 10px;
+        }
+        .provider-meta {
+            display: flex;
+            justify-content: space-between;
+            font-size: 0.85rem;
+            color: #888;
+        }
+        #console {
+            background: #000;
+            color: #00ff00;
+            padding: 15px;
+            font-family: 'Courier New', monospace;
+            font-size: 0.85rem;
+            height: 300px;
+            overflow-y: auto;
+            border: 1px solid #333;
+            border-radius: 8px;
+        }
+        .console-line {
+            margin-bottom: 5px;
+        }
+        .console-timestamp {
+            color: #666;
+        }
+        .console-message {
+            color: #d4af37;
+        }
+        footer {
+            text-align: center;
+            padding: 40px;
+            color: #666;
+            font-size: 0.85rem;
+            margin-top: 60px;
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>APEX</h1>
+        <p class="tagline">Ultra-Low Latency Robotic Middleware</p>
+    </header>
+
+    <div class="container">
+        <div class="grid">
+            <div class="card">
+                <h2>
+                    <span class="status-indicator status-online"></span>
+                    System Status
+                </h2>
+                <div class="stat">
+                    <span class="stat-label">Version</span>
+                    <span class="stat-value gold" id="version">v0.1.0</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">CPU</span>
+                    <span class="stat-value" id="cpu">--</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">Memory</span>
+                    <span class="stat-value" id="memory">--</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">Topics</span>
+                    <span class="stat-value gold" id="topic-count">0</span>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>Broker Stats</h2>
+                <div class="stat">
+                    <span class="stat-label">Active Topics</span>
+                    <span class="stat-value" id="broker-topics">0</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">Subscriptions</span>
+                    <span class="stat-value" id="broker-subs">0</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">WebSocket Clients</span>
+                    <span class="stat-value" id="broker-ws">0</span>
+                </div>
+                <div class="stat">
+                    <span class="stat-label">Status</span>
+                    <span class="stat-value green" id="broker-status">Running</span>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>AI Providers</h2>
+                <div id="providers-list">
+                    <p style="color: #666;">Loading...</p>
+                </div>
+            </div>
+
+            <div class="card">
+                <h2>Topics</h2>
+                <div id="topics-list">
+                    <p style="color: #666;">No topics yet</p>
+                </div>
+            </div>
+
+            <div class="card" style="grid-column: 1 / -1;">
+                <h2>Console</h2>
+                <div id="console">
+                    <div class="console-line">
+                        <span class="console-timestamp">[APEX]</span>
+                        <span class="console-message"> Dashboard connected. Waiting for data...</span>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <footer>
+        APEX Middleware &copy; 2026 | Built with precision
+    </footer>
+
+    <script>
+        let ws;
+        function connectWebSocket() {
+            ws = new WebSocket(`ws://${window.location.host}/api/ws`);
+
+            ws.onopen = () => {
+                console.log('[APEX WS] Connected');
+                addConsoleLog('WebSocket connected');
+            };
+
+            ws.onmessage = (event) => {
+                const data = JSON.parse(event.data);
+                if (data.type === 'init') {
+                    document.getElementById('version').textContent = `v${data.version}`;
+                    updateBrokerStats(data.broker);
+                    updateProviders(data.providers);
+                    addConsoleLog('Initialized');
+                } else if (data.type === 'system_stats') {
+                    document.getElementById('cpu').textContent = `${data.cpu.toFixed(1)}%`;
+                    document.getElementById('memory').textContent = `${data.memory.toFixed(1)}%`;
+                    document.getElementById('topic-count').textContent = data.topics;
+                } else if (data.type === 'topic_message') {
+                    addConsoleLog(`Topic: ${data.topic} | Latency: ${data.latency_us.toFixed(2)}μs`);
+                }
+            };
+
+            ws.onerror = (error) => {
+                console.error('[APEX WS] Error:', error);
+                addConsoleLog('WebSocket error', true);
+            };
+
+            ws.onclose = () => {
+                console.log('[APEX WS] Disconnected. Reconnecting...');
+                addConsoleLog('WebSocket disconnected. Reconnecting...');
+                setTimeout(connectWebSocket, 3000);
+            };
+        }
+
+        function updateBrokerStats(broker) {
+            document.getElementById('broker-topics').textContent = broker.topics || 0;
+            document.getElementById('broker-subs').textContent = broker.total_subscriptions || 0;
+            document.getElementById('broker-ws').textContent = broker.ws_clients || 0;
+            document.getElementById('broker-status').textContent = broker.running ? 'Running' : 'Stopped';
+        }
+
+        function updateProviders(providers) {
+            const container = document.getElementById('providers-list');
+            if (!providers || Object.keys(providers).length === 0) {
+                container.innerHTML = '<p style="color: #666;">No providers configured</p>';
+                return;
+            }
+            container.innerHTML = '';
+            for (const [role, p] of Object.entries(providers)) {
+                const card = document.createElement('div');
+                card.className = 'provider-card';
+                card.innerHTML = `
+                    <h3>${role}</h3>
+                    <div class="provider-meta">
+                        <span>${p.name} / ${p.model}</span>
+                        <span>${p.total_calls} calls · ${p.avg_latency_ms}ms avg</span>
+                    </div>
+                `;
+                container.appendChild(card);
+            }
+        }
+
+        function addConsoleLog(message, isError = false) {
+            const console = document.getElementById('console');
+            const line = document.createElement('div');
+            line.className = 'console-line';
+            const timestamp = new Date().toLocaleTimeString();
+            line.innerHTML = `
+                <span class="console-timestamp">[${timestamp}]</span>
+                <span class="console-message" style="color: ${isError ? '#f87171' : '#d4af37'};">${message}</span>
+            `;
+            console.appendChild(line);
+            console.scrollTop = console.scrollHeight;
+        }
+
+        // Initial load
+        async function loadStatus() {
+            try {
+                const resp = await fetch('/api/status');
+                const data = await resp.json();
+                updateBrokerStats(data.broker);
+                updateProviders(data.ai_providers);
+                document.getElementById('cpu').textContent = `${data.system.cpu_percent.toFixed(1)}%`;
+                document.getElementById('memory').textContent = `${data.system.memory_percent.toFixed(1)}%`;
+            } catch (e) {
+                console.error('Failed to load status:', e);
+            }
+        }
+
+        loadStatus();
+        connectWebSocket();
+    </script>
+</body>
+</html>
