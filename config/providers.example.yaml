@@ -1,0 +1,39 @@
+# APEX AI Providers Configuration
+# Copy to providers.yaml and add your API keys
+
+providers:
+  build_ai:
+    name: openai
+    model: gpt-4o
+    api_key: $OPENAI_API_KEY  # or paste key directly
+    role: code_generation
+    max_tokens: 2048
+    temperature: 0.3
+    timeout: 30.0
+
+  runtime_ai:
+    name: anthropic
+    model: claude-opus-4-5
+    api_key: $ANTHROPIC_API_KEY
+    role: task_planning
+    max_tokens: 4096
+    temperature: 0.5
+    timeout: 45.0
+
+  robot_ai:
+    name: openai
+    model: gpt-4o-mini
+    api_key: $OPENAI_API_KEY
+    role: robot_commands
+    max_tokens: 512
+    temperature: 0.2
+    timeout: 20.0
+
+  fallback:
+    name: openai
+    model: gpt-4o
+    api_key: $OPENAI_API_KEY
+    role: fallback
+    max_tokens: 1024
+    temperature: 0.4
+    timeout: 30.0
