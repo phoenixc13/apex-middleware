@@ -147,3 +147,170 @@ providers:
 ## License
 
 MIT — Built by the APEX Team
+
+
+## 🚀 Quick Start
+
+### Installation
+
+```bash
+# Clone the repository
+git clone https://github.com/phoenixc13/apex-middleware.git
+cd apex-middleware
+
+# Create virtual environment
+python -m venv venv
+source venv/bin/activate  # On Windows: venv\Scripts\activate
+
+# Install dependencies
+pip install -r requirements.txt
+```
+
+### Configuration
+
+1. **Create `.env` file** from template:
+```bash
+cp .env.example .env
+```
+
+2. **Add your Supabase credentials** in `.env`:
+```env
+SUPABASE_URL=https://your-project.supabase.co
+SUPABASE_KEY=your-anon-key-here
+JWT_SECRET_KEY=your-secret-key-here
+```
+
+3. **Set up Supabase project**:
+   - Create account at [supabase.com](https://supabase.com)
+   - Create new project
+   - Copy URL and anon key to `.env`
+   - Enable Email Auth in Authentication settings
+
+### Run
+
+```bash
+# Start APEX Middleware
+python -m apex.main
+
+# Access Dashboard
+# Open browser: http://localhost:8000
+```
+
+## 🔐 Authentication
+
+**Powered by Supabase**
+
+- ✅ Email/Password authentication
+- ✅ JWT token management
+- ✅ Session persistence
+- ✅ Protected routes
+- ✅ User profile management
+
+### Usage Example
+
+```python
+from apex.auth.supabase_client import supabase_auth
+
+# Register new user
+result = await supabase_auth.sign_up(
+    email="user@example.com",
+    password="secure_password",
+    metadata={"name": "Robot Engineer"}
+)
+
+# Sign in
+result = await supabase_auth.sign_in(
+    email="user@example.com",
+    password="secure_password"
+)
+
+if result["success"]:
+    access_token = result["session"].access_token
+    print(f"Logged in: {result['user'].email}")
+```
+
+## 🏗️ Project Structure
+
+```
+apex-middleware/
+├── apex/
+│   ├── auth/               # 🔐 Authentication (Supabase)
+│   │   └── supabase_client.py
+│   ├── axon/               # 📦 Binary IDL
+│   │   ├── serializer.py
+│   │   └── types.py
+│   ├── drivers/            # 🤖 Robot Drivers
+│   │   └── base.py
+│   ├── runtime/            # ⚡ Core Runtime
+│   │   ├── broker.py
+│   │   ├── registry.py
+│   │   └── scheduler.py
+│   ├── ai/                 # 🧠 AI Router
+│   │   └── router.py
+│   ├── api/                # 🌐 REST API
+│   │   └── routes.py
+│   └── main.py             # 🚀 Entry Point
+├── dashboard/              # 💎 Luxury UI
+│   ├── index.html
+│   └── style.css
+├── config/
+│   └── providers.example.yaml
+├── .env.example            # 📝 Config Template
+├── requirements.txt
+└── README.md
+```
+
+## 📊 Features
+
+### ⚡ Ultra-Low Latency
+- Binary serialization (AXON protocol)
+- Shared memory transport
+- Zero-copy message passing
+- Priority-based scheduling
+
+### 🤖 Robot Integration
+- Serial driver support (Arduino, etc.)
+- Network driver support (TCP/IP)
+- Async/await architecture
+- Emergency stop protocols
+
+### 🧠 AI Orchestration
+- External AI model routing (GPT-4, Claude)
+- API-first design
+- Pluggable architecture
+- No proprietary AI engine
+
+### 💎 Luxury Dashboard
+- Gold/Black/Silver/White theme
+- Real-time monitoring
+- WebSocket support
+- Responsive design
+
+## 🔧 Development
+
+```bash
+# Run tests
+pytest
+
+# Format code
+black apex/
+
+# Type checking
+mypy apex/
+```
+
+## 📝 License
+
+MIT License - see LICENSE file
+
+## 🌟 Contributing
+
+Contributions welcome! Please read CONTRIBUTING.md first.
+
+## 📧 Contact
+
+For questions: [phoenixc13](https://github.com/phoenixc13)
+
+---
+
+**Built with ❤️ for the robotics community**
